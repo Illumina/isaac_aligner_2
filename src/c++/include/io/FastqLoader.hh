@@ -37,6 +37,7 @@ class FastqLoader
     std::vector<boost::shared_ptr<FastqReader> >  readReaders_;
     bool paired_;
     common::ThreadVector &threads_;
+    const std::string &qualityEncodingString_;
 
 public:
     /**
@@ -49,13 +50,15 @@ public:
         const bool allowVariableLength,
         const std::size_t maxPathLength,
         common::ThreadVector &threads,
-        const unsigned inputLoadersMax) :
+        const unsigned inputLoadersMax,
+	const std::string &qualityEncodingString) :
         inputLoadersMax_(inputLoadersMax),
         // notice that single-ended fastq will use only half the allowed threads to decompress bgzf.
         // That is not correct way to do it, but not particularly important. We mainly care here for
         // inputLoadersMax_=1 scenario which is important for debugging and such.
         paired_(false),
-        threads_(threads)
+        threads_(threads),
+	qualityEncodingString_(qualityEncodingString)
     {
         readReaders_.resize(2);
         threads_.execute(boost::bind(&FastqLoader::initializeReaderThread, this, _1, allowVariableLength, maxPathLength), 2);
@@ -126,19 +129,18 @@ public:
     }
 private:
     template <typename InsertIt>
-    static unsigned loadSingleRead(FastqReader &reader, unsigned clusterCount,
+    unsigned loadSingleRead(FastqReader &reader, unsigned clusterCount,
                             const flowcell::ReadMetadata &readMetadata,
                             const unsigned step, const unsigned nameLengthMax, InsertIt &it)
     {
         unsigned clustersToRead = clusterCount;
         for (;clustersToRead && reader.hasData();)
         {
-            it = reader.extractBcl(readMetadata, it);
+            it = reader.extractBcl(readMetadata, it, qualityEncodingString_);
             if (nameLengthMax)
             {
                 it = reader.extractReadName(nameLengthMax, it);
             }
-
             reader.next();
             // avoid debug glibc complaining about advancing iterator past the end of the container
             if (--clustersToRead)

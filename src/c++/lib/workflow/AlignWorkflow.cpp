@@ -119,7 +119,8 @@ AlignWorkflow::AlignWorkflow(
     const bool qScoreBin,
     const boost::array<char, 256> &fullBclQScoreTable,
     const OptionalFeatures optionalFeatures,
-    const bool pessimisticMapQ)
+    const bool pessimisticMapQ,
+    const std::string &qualityEncodingString)
     : argv_(argv)
     , description_(description)
     , flowcellLayoutList_(flowcellLayoutList)
@@ -191,6 +192,7 @@ AlignWorkflow::AlignWorkflow(
     , fullBclQScoreTable_(fullBclQScoreTable)
     , optionalFeatures_(optionalFeatures)
     , pessimisticMapQ_(pessimisticMapQ)
+    , qualityEncodingString_(qualityEncodingString)
     , binRegexString_(binRegexString)
     , memoryControl_(memoryControl)
     , userTemplateLengthStatistics_(userTemplateLengthStatistics)
@@ -256,7 +258,8 @@ void AlignWorkflow::findMatches(alignWorkflow::FoundMatchesMetadata &foundMatche
         tempSaversMax_,
         memoryControl_,
         clusterIdList_,
-        sortedReferenceMetadataList_);
+        sortedReferenceMetadataList_,
+	qualityEncodingString_);
 
     if (16 == seedLength_)
     {
@@ -328,7 +331,7 @@ void AlignWorkflow::selectMatches(
         keepUnaligned_, clipSemialigned_, clipOverlapping_,
         scatterRepeats_, rescueShadows_, anchorMate_, gappedMismatchesMax_, smitWatermanGapsMax_, smartSmithWaterman_, noSmithWaterman_, splitAlignments_,
         gapMatchScore_, gapMismatchScore_, gapOpenScore_, gapExtendScore_, minGapExtendScore_, splitGapLength_,
-        dodgyAlignmentScore_, qScoreBin_, fullBclQScoreTable_, optionalFeatures_ & BamZX);
+        dodgyAlignmentScore_, qScoreBin_, fullBclQScoreTable_, optionalFeatures_ & BamZX, qualityEncodingString_);
 
     transition.selectMatches(memoryControl_, matchSelectorStatsXmlPath_, barcodeTemplateLengthStatistics);
 }

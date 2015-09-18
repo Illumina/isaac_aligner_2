@@ -70,7 +70,8 @@ public:
         const flowcell::BarcodeMetadataList &barcodeMetadataList,
         const reference::SortedReferenceMetadataList &sortedReferenceMetadataList,
         const flowcell::Layout &fastqFlowcellLayout,
-        common::ThreadVector &threads);
+        common::ThreadVector &threads,
+	const std::string &qualityEncodingString);
 
     // TileSource implementation
     flowcell::TileMetadataList discoverTiles();
@@ -116,7 +117,8 @@ public:
         const flowcell::TileMetadataList &tileMetadataList,
         const bool allowVariableFastqLength,
         common::ThreadVector &threads,
-        const unsigned inputLoadersMax);
+        const unsigned inputLoadersMax,
+	const std::string &qualityEncodingString);
     void loadClusters(
         const flowcell::TileMetadata &tileMetadata,
         alignment::BclClusters &bclData);

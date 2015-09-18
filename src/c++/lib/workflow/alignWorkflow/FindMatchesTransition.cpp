@@ -61,7 +61,8 @@ FindMatchesTransition::FindMatchesTransition(
     const unsigned tempSaversMax,
     const common::ScopedMallocBlock::Mode memoryControl,
     const std::vector<std::size_t> &clusterIdList,
-    const reference::SortedReferenceMetadataList &sortedReferenceMetadataList
+    const reference::SortedReferenceMetadataList &sortedReferenceMetadataList,
+    const std::string &qualityEncodingString
     )
     : flowcellLayoutList_(flowcellLayoutList)
     , tempDirectory_(tempDirectory)
@@ -86,6 +87,7 @@ FindMatchesTransition::FindMatchesTransition(
     , sortedReferenceMetadataList_(sortedReferenceMetadataList)
     // Have thread pool for the maximum number of threads we may potentially need.
     , threads_(std::max(inputLoadersMax_, coresMax_))
+    , qualityEncodingString_(qualityEncodingString)
 {
 }
 
@@ -540,7 +542,7 @@ void FindMatchesTransition::perform(FoundMatchesMetadata &foundMatches)
                     // On the other hand, there might be a need to limit the io to 1 thread, while allowing
                     // for the multithreaded processing of other cpu-demanding things.
                     std::min(inputLoadersMax_, coresMax_), seedBaseQualityMin_, barcodeMetadataList_,
-                    sortedReferenceMetadataList_, flowcell, threads_);
+                    sortedReferenceMetadataList_, flowcell, threads_, qualityEncodingString_);
                 processFlowcellTiles(flowcell, dataSource, demultiplexingStats, ret);
                 break;
             }

@@ -118,7 +118,8 @@ SelectMatchesTransition::SelectMatchesTransition(
         const alignment::TemplateBuilder::DodgyAlignmentScore dodgyAlignmentScore,
         const bool qScoreBin,
         const boost::array<char, 256> &fullBclQScoreTable,
-        const bool extractClusterXy
+        const bool extractClusterXy,
+	const std::string &qualityEncodingString
     )
     : matchLoadThreads_(tempLoadersMax),
       inputLoaderThreads_(inputLoadersMax),
@@ -166,7 +167,8 @@ SelectMatchesTransition::SelectMatchesTransition(
                       tileMetadataList_,
                       allowVariableFastqLength,
                       inputLoaderThreads_,
-                      inputLoadersMax)),
+                      inputLoadersMax,
+		      qualityEncodingString)),
       bamBaseCallsSource_(
           flowcellLayoutList_.end() == std::find_if(
               flowcellLayoutList_.begin(), flowcellLayoutList_.end(),

@@ -247,6 +247,7 @@ void FastqReader::findQScores()
             BOOST_THROW_EXCEPTION(FastqFormatException((boost::format("Fastq file end while looking for qscores: %s, offset %u") %
                 getPath() % getOffset(qScoresBegin_)).str()));
         }
+	qScoresBegin_ = findNewLine(qScoresBegin_, BufferType::const_iterator(buffer_.end()));
         qScoresBegin_ = findNotNewLine(qScoresBegin_, BufferType::const_iterator(buffer_.end()));
         if (buffer_.end() == qScoresBegin_)
         {

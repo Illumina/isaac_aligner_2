@@ -76,7 +76,8 @@ public:
         const unsigned tempSaversMax,
         const common::ScopedMallocBlock::Mode memoryControl,
         const std::vector<std::size_t> &clusterIdList,
-        const reference::SortedReferenceMetadataList &sortedReferenceMetadataList);
+        const reference::SortedReferenceMetadataList &sortedReferenceMetadataList,
+	const std::string &qualityEncodingString);
 
     template <typename KmerT>
     void perform(FoundMatchesMetadata &foundMatches);
@@ -107,6 +108,7 @@ private:
 
     const reference::SortedReferenceMetadataList &sortedReferenceMetadataList_;
     common::ThreadVector threads_;
+    const std::string &qualityEncodingString_;
 
     static const unsigned maxIterations_ = 2;
 

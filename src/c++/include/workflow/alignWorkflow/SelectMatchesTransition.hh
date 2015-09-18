@@ -109,7 +109,8 @@ public:
         const alignment::TemplateBuilder::DodgyAlignmentScore dodgyAlignmentScore,
         const bool qScoreBin,
         const boost::array<char, 256> &fullBclQScoreTable,
-        const bool extractClusterXy);
+        const bool extractClusterXy,
+	const std::string &qualityEncodingString);
 
     /**
      ** \brief Select the best match for each of the cluster in the given tile

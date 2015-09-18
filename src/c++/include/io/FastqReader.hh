@@ -56,7 +56,6 @@ public:
 class FastqReader
 {
     const std::size_t uncompressedBufferSize_;
-    static const unsigned FASTQ_QSCORE_OFFSET = 33;
     const bool allowVariableLength_;
 
     FileBufWithReopen fileBuffer_;
@@ -97,7 +96,7 @@ public:
     void next();
 
     template <typename InsertIt>
-    InsertIt extractBcl(const flowcell::ReadMetadata &readMetadata, InsertIt it) const;
+    InsertIt extractBcl(const flowcell::ReadMetadata &readMetadata, InsertIt it, const std::string &qualityEncodingString) const;
 
     template <typename InsertIt>
     InsertIt extractReadName(const unsigned nameLengthMax, InsertIt it) const;
@@ -145,17 +144,18 @@ private:
 };
 
 template <typename InsertIt>
-InsertIt FastqReader::extractBcl(const flowcell::ReadMetadata &readMetadata, InsertIt it) const
+InsertIt FastqReader::extractBcl(const flowcell::ReadMetadata &readMetadata, InsertIt it, const std::string &qualityEncodingString) const
 {
     const InsertIt start = it;
     BufferType::const_iterator baseCallsIt = baseCallsBegin_;
     BufferType::const_iterator qScoresIt = qScoresBegin_;
     std::vector<unsigned>::const_iterator cycleIterator = readMetadata.getCycles().begin();
     unsigned currentCycle = readMetadata.getFirstReadCycle();
+    unsigned qscore_offset = qualityEncodingString == "Phred+64" ? 64 : 33;
     for(;endIt_ != qScoresIt && readMetadata.getCycles().end() != cycleIterator; ++baseCallsIt, ++qScoresIt, ++currentCycle)
     {
 //        ISAAC_THREAD_CERR << "cycle " << *cycleIterator << std::endl;
-        if (*cycleIterator != currentCycle)
+	if (*cycleIterator != currentCycle)
         {
             continue;
         }
@@ -171,7 +171,7 @@ InsertIt FastqReader::extractBcl(const flowcell::ReadMetadata &readMetadata, Ins
         }
         else
         {
-            const unsigned char baseQuality = (*qScoresIt - FASTQ_QSCORE_OFFSET);
+            const unsigned char baseQuality = (*qScoresIt - qscore_offset);
             if ((1 << 6) <= baseQuality)
             {
                 BOOST_THROW_EXCEPTION(FastqFormatException((boost::format("Invalid quality %d found in %s at offset %u. Base quality scores [0-63] supported only.") %

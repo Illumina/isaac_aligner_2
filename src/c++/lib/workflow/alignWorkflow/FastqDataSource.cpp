@@ -76,7 +76,8 @@ FastqSeedSource<KmerT>::FastqSeedSource(
     const flowcell::BarcodeMetadataList &barcodeMetadataList,
     const reference::SortedReferenceMetadataList &sortedReferenceMetadataList,
     const flowcell::Layout &fastqFlowcellLayout,
-    common::ThreadVector &threads) :
+    common::ThreadVector &threads,
+    const std::string &qualityEncodingString) :
         tileClustersMax_(clustersAtATimeMax ?
             std::min<unsigned>(clustersAtATimeMax, 40000000 / fastqFlowcellLayout.getSeedMetadataList().size()):
             (40000000 / fastqFlowcellLayout.getSeedMetadataList().size())),
@@ -94,7 +95,7 @@ FastqSeedSource<KmerT>::FastqSeedSource(
         currentLaneIterator_(lanes_.begin()),
         currentTile_(1),
         threads_(threads),
-        fastqLoader_(allowVariableLength, 0, threads_, coresMax_)
+        fastqLoader_(allowVariableLength, 0, threads_, coresMax_, qualityEncodingString)
 
 {
 }
@@ -213,9 +214,10 @@ FastqBaseCallsSource::FastqBaseCallsSource(
     const flowcell::TileMetadataList &tileMetadataList,
     const bool allowVariableFastqLength,
     common::ThreadVector &threads,
-    const unsigned inputLoadersMax):
+    const unsigned inputLoadersMax,
+    const std::string &qualityEncodingString):
     flowcellLayoutList_(flowcellLayoutList),
-    fastqLoader_(allowVariableFastqLength, getLongestFastqPath(flowcellLayoutList_).string().size(), threads, inputLoadersMax),
+    fastqLoader_(allowVariableFastqLength, getLongestFastqPath(flowcellLayoutList_).string().size(), threads, inputLoadersMax, qualityEncodingString),
     fastqFilePaths_(2) //read 1 and read 2 paths
 {
     boost::filesystem::path longestFastqFilePath = getLongestFastqPath(flowcellLayoutList_);

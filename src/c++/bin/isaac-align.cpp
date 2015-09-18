@@ -122,7 +122,8 @@ void align(const isaac::options::AlignOptions &options)
         options.qScoreBin,
         options.fullBclQScoreTable,
         options.optionalFeatures,
-        options.pessimisticMapQ);
+        options.pessimisticMapQ,
+	options.qualityEncodingString);
 
     const boost::filesystem::path stateFilePath = options.tempDirectory / "AlignerState.txt";
 

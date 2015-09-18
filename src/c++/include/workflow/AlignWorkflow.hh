@@ -153,7 +153,8 @@ public:
         const bool qScoreBin,
         const boost::array<char, 256> &fullBclQScoreTable,
         const OptionalFeatures optionalFeatures,
-        const bool pessimisticMapQ);
+        const bool pessimisticMapQ,
+	const std::string &qualityEncodingString);
 
     /**
      * \brief Runs end-to-end alignment from the beginning
@@ -272,6 +273,7 @@ private:
     const boost::array<char, 256> &fullBclQScoreTable_;
     const OptionalFeatures optionalFeatures_;
     const bool pessimisticMapQ_;
+    const std::string &qualityEncodingString_;
     const std::string &binRegexString_;
     const common::ScopedMallocBlock::Mode memoryControl_;
     const alignment::TemplateLengthStatistics userTemplateLengthStatistics_;

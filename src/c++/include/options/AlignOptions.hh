@@ -173,6 +173,7 @@ public:
     std::string bamExcludeTags;
     workflow::AlignWorkflow::OptionalFeatures optionalFeatures;
     bool pessimisticMapQ;
+    std::string qualityEncodingString;
 };
 
 } // namespace options
